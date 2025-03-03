@@ -1,0 +1,439 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Lora:wght@400;700&display=swap');
+/* Header Styling */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #143a94;
+    color: white;
+}
+
+body {
+    background-color: #F5F5F5;
+    font-family: 'Montserrat', sans-serif;
+    overflow-x: hidden;
+}
+
+/* Logo Styling */
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Search Bar Styling */
+.search-container {
+    flex: 1;
+    display:flex;
+    justify-content: center;
+}
+
+#search {
+    width: 70%;
+    max-width: 400px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Floating Button for adding a senator */
+#addSenatorFloatingBtn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #ce1126;
+    color: white;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    max-width: 100%;
+}
+
+#addSenatorFloatingBtn:hover {
+    background-color: #fcd116;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    padding: 30px;
+}
+
+/* ✅ Adjusted to take full width */
+#senatorContainer {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+    gap: 25px; /* Space between cards */
+    width: 100%; /* Allow full width */
+}
+
+/* Senator Card Styling */
+.senator-card {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    text-align:start;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    width: 100%; /* Ensure it fits properly */
+    margin-bottom: 5px;
+}
+
+.senator-card h3 {
+    font-size: 22px;
+    margin-bottom: 5px;
+}
+
+.senator-card p {
+    font-size: 18px;
+    color: gray;
+    margin-bottom: 10px;
+}
+
+/* Button group container */
+.button-group {
+    display: flex;
+    gap: 20px; /* Space between buttons */
+    justify-content: center; /* Center align */
+    margin-top: 10px;
+    max-width: 300px;
+}
+
+/* Shared button styles */
+.opinion-btn {
+    background: #627e8b;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    flex: 1; /* Make both buttons equal width */
+    text-align: center;
+    transition: background 0.3s;
+}
+
+.opinion-btn:hover {
+    background: #0056b3;
+}
+
+
+.view-opinions-btn:hover {
+    background: #0056b3;
+}
+
+/* Styling for Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 600px;
+    text-align:justify;
+    position: relative;
+}
+
+.modal-content h2 {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* Styling for the function of adding a new senator */
+
+#addSenatorForm {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 20px;
+}
+
+#addSenatorForm label {
+    font-weight: bold;
+    text-align: left;
+}
+
+#addSenatorForm input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#addSenatorForm button[type="submit"] {
+    background-color: #007bff; /* Blue button */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+#addSenatorForm button[type="submit"]:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Grid layout for information cards */
+.opinions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Responsive grid */
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.opinion-item {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.opinion-item:hover {
+    background: #e9e9e9;
+}
+
+.info-text {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Full-screen detail modal */
+.detail-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.detail-modal-content {
+    max-width: 600px; /* Limit width */
+    max-height: 80vh; /* Maximum height (80% of the viewport height) */
+    overflow-y: auto; /* Enable vertical scrolling if content exceeds max-height */
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+.close-detail-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.opinion-text {
+    font-family: inherit;
+    white-space: pre-wrap; /* Preserve line breaks */
+    text-align: left;
+    font-size: 16px;
+    color: #333;
+    background: #f4f4f4;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-wrap: break-word;
+    max-width: 100%;
+    max-height: 50vh; /* Set max height to prevent overflowing */
+    overflow-y: auto; /* Enable scrolling */
+}
+
+.reference-text {
+    font-size: 14px;
+    color: #007bff;
+    margin-top: 20px;
+}
+
+.reference-text a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.reference-text a:hover {
+    text-decoration: underline;
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #333;
+    transition: color 0.3s;
+}
+
+.close-btn hover {
+    color: #ce1126;
+}
+
+/* Fullscreen Opinion Modal */
+.opinion-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Bigger Modal (Almost Fullscreen) */
+.opinion-modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%; /* Almost full width */
+    max-width: 1000px;
+    height: 90vh; /* Takes up 90% of the viewport height */
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* Large Title */
+.opinion-modal-content h2 {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* Make form take full height */
+.opinion-modal-content form {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Makes the form fill remaining space */
+}
+
+/* Huge Textarea (Takes Most of the Space) */
+.opinion-modal-content textarea {
+    width: 100%;
+    height: 100%; /* Takes up all available height */
+    flex-grow: 1; /* Expands to fill space */
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 18px;
+    resize: none; /* Prevents manual resizing */
+    outline: none;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+/* Input for Reference */
+.opinion-modal-content input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Submit Button */
+.opinion-modal-content button {
+    background: blue;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: background 0.3s;
+    margin-top: 10px;
+}
+
+.opinion-modal-content button:hover {
+    background: darkblue;
+}
+
+
+/* Close button */
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #333;
+    transition: color 0.3s;
+}
+
+.close-modal:hover {
+    color: red;
+}
+
+/* Optional: Style the scrollbar (for WebKit browsers like Chrome and Safari) */
+.scroll-container::-webkit-scrollbar {
+    width: 8px; /* Adjust width as needed */
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+    background-color: #888; /* Scrollbar thumb color */
+    border-radius: 4px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+}
+
+
+/* Responsive: Adjust to 2 columns on smaller screens */
+@media (max-width: 900px) {
+    #senatorContainer {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Responsive: Adjust to 1 column on mobile */
+@media (max-width: 600px) {
+    #senatorContainer {
+        grid-template-columns: 1fr;
+    }
+}

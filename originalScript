@@ -1,0 +1,171 @@
+// Import Firebase modules
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+import { getDatabase, ref, push, onValue, update } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+
+// Firebase Configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyCNM55D9108SdpAk8P_gKBuHNyznQaQl00",
+    authDomain: "senator-forum.firebaseapp.com",
+    databaseURL: "https://senator-forum-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "senator-forum",
+    storageBucket: "senator-forum.firebasestorage.app",
+    messagingSenderId: "1004038813101",
+    appId: "1:1004038813101:web:59a28db6ef29bebabf9d24"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// Get DOM elements
+const senatorContainer = document.getElementById("senatorContainer");
+const addSenatorButton = document.getElementById("addSenatorFloatingBtn");
+const modal = document.getElementById("addSenatorModal");
+const addSenatorForm = document.getElementById("addSenatorForm");
+const searchInput = document.getElementById("search");
+
+// Function to create a senator card
+function createSenatorCard(id, name, party) {
+    const card = document.createElement("div");
+    card.classList.add("senator-card");
+    card.innerHTML = `
+        <h3>${name}</h3>
+        <p>${party}</p>
+        <div class="button-group">
+            <button class="opinion-btn view-opinions-btn" data-id="${id}">View Opinions</button>
+            <button class="opinion-btn add-opinion-btn" data-id="${id}">Add Opinion</button>
+        </div>
+        <div class="opinions-container" id="opinions-${id}" style="display: none;"></div>
+    `;
+    
+    card.querySelector(".view-opinions-btn").addEventListener("click", () => toggleOpinions(id, party));
+    card.querySelector(".add-opinion-btn").addEventListener("click", () => openOpinionModal(id, party));
+
+    return card;
+}
+
+// Function to retrieve senators grouped by party
+function getSenators() {
+    const senatorsRef = ref(db, "senators");
+    onValue(senatorsRef, (snapshot) => {
+        senatorContainer.innerHTML = "";
+        if (!snapshot.exists()) return;
+
+        snapshot.forEach((partySnapshot) => {
+            const partyName = partySnapshot.key;
+            const rowContainer = document.createElement("div");
+            rowContainer.classList.add("party-row");
+            rowContainer.innerHTML = `<h2>${partyName}</h2>`;
+
+            const scrollContainer = document.createElement("div");
+            scrollContainer.classList.add("scroll-container");
+
+            partySnapshot.forEach((senatorSnapshot) => {
+                const senator = senatorSnapshot.val();
+                scrollContainer.appendChild(createSenatorCard(senatorSnapshot.key, senator.name, senator.party));
+            });
+
+            rowContainer.appendChild(scrollContainer);
+            senatorContainer.appendChild(rowContainer);
+        });
+    });
+}
+
+// Function to add a senator under the corresponding party node
+function addSenator(name, party) {
+    if (!name || !party) {
+        alert("Please fill in all fields.");
+        return;
+    }
+
+    const partyRef = ref(db, `senators/${party}`);
+    const newSenatorRef = push(partyRef);
+    
+    update(newSenatorRef, { name, party, opinions: {} })
+        .then(() => console.log("Senator added successfully"))
+        .catch(error => console.error("Error adding senator:", error));
+}
+
+// Function to open the Add Opinion modal
+function openOpinionModal(senatorId, party) {
+    const modal = document.createElement("div");
+    modal.classList.add("opinion-modal");
+    modal.innerHTML = `
+        <div class="opinion-modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Add Opinion</h2>
+            <form id="opinionForm">
+                <textarea id="opinionText" placeholder="Write opinion here..." required></textarea>
+                <input type="text" id="reference" placeholder="Reference (Required)" required>
+                <button type="submit">Submit Opinion</button>
+            </form>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+    modal.querySelector(".close-modal").addEventListener("click", () => modal.remove());
+    modal.querySelector("#opinionForm").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const opinionText = document.getElementById("opinionText").value.trim();
+        const reference = document.getElementById("reference").value.trim();
+
+        if (opinionText && reference) {
+            addOpinion(senatorId, party, opinionText, reference);
+            modal.remove();
+            alert("Opinion added successfully!");
+        } else {
+            alert("Please provide an opinion and a reference.");
+        }
+    });
+}
+
+// Function to add an opinion under the senator's node
+function addOpinion(senatorId, party, opinion, reference) {
+    const opinionsRef = ref(db, `senators/${party}/${senatorId}/opinions`);
+    push(opinionsRef, { opinion, reference })
+        .then(() => console.log("Opinion added successfully"))
+        .catch(error => console.error("Error adding opinion:", error));
+}
+
+// Event listeners
+document.addEventListener("DOMContentLoaded", getSenators);
+addSenatorButton.addEventListener("click", () => modal.style.display = "flex");
+addSenatorForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = document.getElementById("senatorName").value.trim();
+    const party = document.getElementById("senatorParty").value.trim();
+    if (name && party) {
+        addSenator(name, party);
+        modal.style.display = "none";
+        addSenatorForm.reset();
+    } else {
+        alert("Please fill in all fields.");
+    }
+});
+
+// Search function
+function searchSenator() {
+    const input = searchInput.value.toLowerCase();
+    const senatorCards = document.querySelectorAll(".senator-card");
+    const partyRows = document.querySelectorAll(".party-row");
+
+    let hasVisibleSenator = false;
+    senatorCards.forEach(card => {
+        const name = card.querySelector("h3").textContent.toLowerCase();
+        if (name.includes(input)) {
+            card.style.display = "block";
+            hasVisibleSenator = true;
+        } else {
+            card.style.display = "none";
+        }
+    });
+
+    partyRows.forEach(row => {
+        const party = row.getAttribute("data-party");
+        const senatorsInParty = row.querySelectorAll(".senator-card");
+        const hasVisibleCards = Array.from(senatorsInParty).some(card => card.style.display !== "none");
+        row.style.display = hasVisibleCards ? "block" : "none";
+    });
+}
+
+searchInput.addEventListener("keyup", searchSenator);
