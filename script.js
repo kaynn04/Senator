@@ -318,7 +318,7 @@ function openOpinionDetailModal(opinion, referenceHTML) {
     detailModal.innerHTML = `
         <div class="detail-modal-content">
             <span class="close-detail-modal">&times;</span>
-            <h2>Informatiion Details</h2>
+            <h2>Information Details</h2>
             <pre class="opinion-text">${opinion}</pre>
             <p class="reference-text"><strong>Reference:</strong> ${referenceHTML}</p>
         </div>
@@ -331,6 +331,26 @@ function openOpinionDetailModal(opinion, referenceHTML) {
         detailModal.remove();
     });
 }
+
+// Show modal if user hasn't seen the tutorial
+window.onload = function () {
+    if (!localStorage.getItem("seenGuide")) {  // FIX: Only show if NOT seen
+        document.getElementById("guideModal").style.display = "flex";
+    }
+};
+
+// Wait for DOM content to load before adding event listener
+document.addEventListener("DOMContentLoaded", function () {
+    const closeBtn = document.querySelector(".guide-close-btn"); // FIX: Match new class name
+
+    if (closeBtn) {
+        closeBtn.addEventListener("click", function () {
+            document.getElementById("guideModal").style.display = "none";
+            localStorage.setItem("seenGuide", "true"); // Store tutorial seen
+        });
+    }
+});
+
 
 
 
